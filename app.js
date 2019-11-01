@@ -471,7 +471,7 @@ app.post('/admin/title/deleteCharac/:characId', function (req, res) {
 });
 
 // -------------------------------------------------------
-const dbUrl = 'mongodb://localhost:27017/lab5';
+const dbUrl = process.env["MONGODB_URI"]||'mongodb://localhost:27017/lab5';
 const connectOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -483,4 +483,5 @@ mongoose.connect(dbUrl, connectOptions)
   .then(() => console.log('Mongo database connected'))
   .catch(() => console.log('ERROR: Mongo database not connected'));
 
-app.listen(3004, () => console.log('Started server'));
+let portTmp = process.env["MONGODB_URI"]|| 3000;
+app.listen(portTmp, () => console.log('Started server'));

@@ -483,5 +483,5 @@ mongoose.connect(dbUrl, connectOptions)
   .then(() => console.log('Mongo database connected'))
   .catch(() => console.log('ERROR: Mongo database not connected'));
 
-let portTmp = process.env["MONGODB_URI"]|| 3000;
+let portTmp = process.env["PORT"]|| 3000;
 app.listen(portTmp, () => console.log('Started server'));

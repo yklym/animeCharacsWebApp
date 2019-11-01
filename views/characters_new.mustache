@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+
+{{> head}}
+
+<body>
+  <!-- logo top -->
+  {{> header}}
+
+
+  <!-- Main part -->
+  
+  <main>
+
+  
+    {{! <label for="pwd">Password:</label>
+    <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd" required>
+    <div class="valid-feedback">Valid.</div>
+    <div class="invalid-feedback">Please fill out this field.</div>
+  </div>
+  <div class="form-group form-check">
+    <label class="form-check-label">
+      <input class="form-check-input" type="checkbox" name="remember" required> I agree on blabla.
+      <div class="valid-feedback">Valid.</div>
+      <div class="invalid-feedback">Check this checkbox to continue.</div>
+    </label>
+  <button type="submit" class="btn btn-primary">Submit</button>
+ }}
+
+        <form action="/admin/createCharac" method = "post" class = "new-charac-form" enctype="multipart/form-data">
+            <div class="form-group-big">
+
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter name" name="name" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
+                </div>
+
+    
+                <div class="form-group">
+                    <label for="fulluname">Full Name:</label>
+                    <input type="text" class="form-control" id="fulluname" placeholder="Enter Fullname" name="fullname" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
+                </div>
+
+                {{! <label for="2"><p>Full Name:</p> </label>
+                <input type="text"  id = 2 name="fullname"> }}
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="number" min="1" max="9999999" id="age" name="age" required>
+                    <div class="valid-feedback">Valid.</div>
+                    <div class="invalid-feedback">Please fill out this field.</div>
+                </div>
+                {{! <label for="3"><p>Age:</p> </label>
+                <input type="number" id = "3" name="age" min="1" max="9999999"> }}
+            </div>
+
+            <div class="form-group-big">
+                    <legend>Photo</legend>
+                <input type="file" name="characPict">
+
+            <input type="submit" class="btn btn-primary" value="Create new character">
+            </div>
+
+        </form>
+
+    </main>
+
+  <!-- footer -->
+
+  {{> footer}}
+</body>
+
+</html>

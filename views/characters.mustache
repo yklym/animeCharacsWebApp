@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+{{> head}}
+
+<body>
+  <!-- logo top -->
+{{>header}}
+
+  <!-- Main part -->
+  <div class="filter-box">
+    <aside class="filters">
+      <p>Some filters here</p>
+      <form action = "/newCharacter" method = "GET">
+        <input type="submit" class="btn btn-info" value="New Title">
+      </form>
+
+    </aside>
+    <aside class="filters">
+      <p>And here</p>
+    </aside>
+  </div>
+  
+  
+  <main class="entities-main">
+    {{{searchResult}}}
+    <div class="entities-wrapper">
+      {{#characters}}
+        <div class="entity">
+
+        <a href=/characters/{{id}}>
+          <img src={{image}} alt="">
+          <p>{{name}}</p>
+        </a>
+
+      </div>    
+      {{/characters}}
+      
+
+    </div>
+
+    <div class="pagination">
+      {{{prevHref}}}
+      {{#pages}}
+      <a href="{{href}}">{{number}}</a>
+      {{/pages}}
+      {{{nextHref}}}
+    </div>
+  </main>
+
+
+  <!-- footer -->
+
+  {{> footer}}
+</body>
+
+</html>

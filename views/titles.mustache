@@ -1,0 +1,40 @@
+{{> head}}
+
+
+<body>
+  {{> header}} 
+  <form action = "/newTitle" method = "GET" style = "position:relative; top:25px; left: 25px;">
+        <input type="submit" class="btn btn-info" value="New Title">
+      </form>
+    <main >
+
+    {{#titles}}
+      <div class="card" style="margin:3%" max-height: 200px;">
+        <div class="card-body"  style="height: 100%;">
+          <div class="my-card-image" style="max-width: 25%; float:left;">
+            <img class="card-img-top float-right img-thumbnail" style="max-height: 170px; max-width: 130px;" 
+              src="{{image}}" alt="Card image">
+          </div>
+          <h4 class="card-title">{{name}}</h4>
+          <p class="card-text">Some text here</p>
+          <a href="/titles/{{_id}}" class="btn btn-primary">Title page</a>
+        </div>
+      </div>   
+    {{/titles}}
+
+  <div class="pagination">
+      {{{prevHref}}}
+      {{#pages}}
+      <a href="{{href}}">{{number}}</a>
+      {{/pages}}
+      {{{nextHref}}}
+    </div>
+  </main>
+
+
+    </main>
+
+{{> footer}}
+</body>
+
+</html>

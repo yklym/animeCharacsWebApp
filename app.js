@@ -3,7 +3,6 @@ const character = require("./models/character");
 const title = require("./models/title");
 
 const mongoose = require('mongoose');
-const fs = require("fs");
 const express = require('express');
 const path = require("path");
 const mustache = require('mustache-express');
@@ -13,6 +12,24 @@ const busboyBodyParser = require('busboy-body-parser');
 const pageSize = 4;
 
 const app = express();
+
+const cloudinary = require('cloudinary');
+cloudinary.config({
+  cloud_name: "yarklym",
+  api_key: "227437672474164",
+  api_secret: "1yBb8flnZo_XSkh_v7jFQssSvGA"
+});
+
+const cloudinaryUploadPromise = (fileBuffer, ...args) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.v2.uploader.upload_stream(...args, (err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    }).end(fileBuffer);;
+  });
+};
+
+
 app.use(express.static('public'));
 // GET 
 let viewsDir = path.join(__dirname, 'views');
@@ -35,30 +52,30 @@ app.use(busboyBodyParser({
 
 
 app.get('/about', function (req, res) {
-  console.log('about.html send');
+  // console.log('about.html send');
   res.render("about", {});
 });
 
 app.get('/', function (req, res) {
-  console.log('index.html send');
+// console.log('index.html send');
   res.render("index", {});
 });
 
 app.get('/users', function (req, res) {
-  console.log('users.html send');
+// console.log('users.html send');
   user.getAll().then(userList => {
     res.render("users", {
       users: userList
     });
   }).catch(err => {
-    console.log("Err in /users: " + err);
+ //// console.log("Err in /users: " + err);
   });
 });
 
 
-app.get('/users/:id(\\d+)', function (req, res) {
-  let id = parseInt(req.params.id);
-  console.log('users #' + id + ' page send');
+app.get('/users/:id', function (req, res) {
+  let id = req.params.id;
+// console.log('users #' + id + ' page send');
   user.getById(id).then(userObj => {
     res.render("user", userObj);
   }).catch(err => {
@@ -82,7 +99,7 @@ app.get('/characters', function (req, res) {
     currTitle = "";
   }
   character.getAllByString(searchWord).then(characterList => {
-    
+
     let pagesList = new Array();
     if (currTitle) {
       characterList = characterList.filter(elem => elem.titles.includes(currTitle));
@@ -90,7 +107,7 @@ app.get('/characters', function (req, res) {
     let pagesAmount = Math.ceil(characterList.length / pageSize);
     if (pagesAmount <= 6) {
       for (let i = 1; i < pagesAmount + 1; i++) {
-        console.log(pagesList);
+     //  console.log(pagesList);
         pagesList.push({
           number: i,
           // ads parametr if last search wasnt empty :
@@ -145,7 +162,7 @@ app.get('/characters', function (req, res) {
     if (resCharacs.length === 0) {
       prevPageHref = "";
       nextPageHref = "";
-      searchResult = resultHtml1 +'No results,  <italic>' + (searchWord ? searchWord : "") + (currTitle ? " TItle: " + currTitle : "") + resultHtml2;
+      searchResult = resultHtml1 + 'No results,  <italic>' + (searchWord ? searchWord : "") + (currTitle ? " TItle: " + currTitle : "") + resultHtml2;
     }
     if (!searchWord) {
       // searchResult = "";
@@ -162,7 +179,7 @@ app.get('/characters', function (req, res) {
     });
 
   }).catch(err => {
-    console.log(err);
+ //  console.log(err);
     res.status(404).send("err");
   });
 
@@ -171,17 +188,17 @@ app.get('/characters', function (req, res) {
 app.get('/characters/:id', function (req, res) {
   let id = req.params.id;
   character.getById(id).then(characObj => {
-    console.log('character # ' + id + ' page send');
+ //  console.log('character # ' + id + ' page send');
     res.render("character", characObj);
   }).catch(err => {
-    console.log(err);
+ //  console.log(err);
     res.status(404).send("err");
   });
 });
 
 app.get('/api/users', function (req, res) {
 
-  console.log('users json send');
+// console.log('users json send');
   user.getAll().then(userList => {
     res.json(userList);
   }).catch(err => {
@@ -191,9 +208,9 @@ app.get('/api/users', function (req, res) {
 
 // /api/users/:id -> {User}
 app.get('/api/users/:id', function (req, res) {
-  let id = parseInt(req.params.id);
-  console.log('user #' + id + ' json send');
-  user.getById().then(targetUser => {
+  let id = req.params.id;
+// console.log('user #' + id + ' json send');
+  user.getById(id).then(targetUser => {
     res.json(targetUser);
   }).catch(err => {
     res.status(404).send("Error 404" + err);
@@ -206,15 +223,15 @@ app.get('/api/users/:id', function (req, res) {
 // Lab 4 
 
 app.get('/newCharacter', function (req, res) {
-  console.log("new character page send");
+// console.log("new character page send");
   res.render('characters_new', {});
 });
 
 app.post('/admin/deleteCharac', function (req, res) {
   let characId = req.headers.referer.split("/").pop();
-  console.log(characId);
+// console.log(characId);
   character.deleteById(characId).then(result => {
-    console.log(result);
+ //  console.log(result);
     res.redirect('/characters');
   }).catch(err => {
     res.status(404).send(err);
@@ -223,45 +240,24 @@ app.post('/admin/deleteCharac', function (req, res) {
 });
 
 app.post('/admin/createCharac', function (req, res) {
-  let avaFile = req.files.characPict;
+  const fileObject = req.files.characPict;
+  const fileBuffer = fileObject.data;
 
   let dateTmp = new Date();
-  let newCharac = new character(null, req.body.name,
-    req.body.fullname,
-    req.body.fullname,
-    [],
-    -1,
-    req.body.age,
-    dateTmp.toISOString(),
-    "--");
+  let newCharac = new character(null, req.body.name,req.body.fullname,req.body.fullname,[],-1,req.body.age,dateTmp.toISOString(),"--");
+  
   character.insert(newCharac).then(charac => {
     let newCharacId = charac._id;
-    newCharac.image = '/data/fs/' + newCharacId + "/" + avaFile.name;
-    character.update(newCharacId, newCharac).then(() => {
-      let dir = path.join(__dirname, 'data/fs/') + newCharacId;
-      console.log(dir);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-        fs.writeFileSync(dir + "/" + avaFile.name, avaFile.data);
-      } else {
-        return new Promise.reject("Problems while saving file");
-      }
-
-      res.redirect("/characters/" + newCharacId);
+    cloudinaryUploadPromise(fileBuffer, {resource_type: 'raw'}).then(result => {
+      newCharac.image = result.url;
+      character.update(newCharacId, newCharac).then(() => {
+        res.redirect("/characters/" + newCharacId);
+      });
+    }).catch(err => {
+   //  console.log(err);
+      res.status(404).send(err);
     });
-  }).catch(err => {
-    res.status(404).send(err);
-  });
-
 });
-
-app.get('/data/fs/*', function (req, res) {
-
-  try {
-    res.sendFile(path.join(__dirname, req.originalUrl));
-  } catch (err) {
-    res.status(404).send("err");
-  }
 });
 
 
@@ -321,7 +317,7 @@ app.get('/titles', function (req, res) {
     }
 
     let searchResult = '<div class="resulting-box"><bold>Results for: <italic>' + searchWord + "</italic></bold></div>";
-    
+
     if (resTitles.length === 0) {
       prevPageHref = "";
       nextPageHref = "";
@@ -332,7 +328,7 @@ app.get('/titles', function (req, res) {
       searchWord = "search";
     }
     // @todo 
-    console.log(searchResult);
+ //  console.log(searchResult);
     res.render('titles', {
       pages: pagesList,
       titles: resTitles,
@@ -343,7 +339,7 @@ app.get('/titles', function (req, res) {
     });
 
   }).catch(err => {
-    console.log(err);
+ //  console.log(err);
     res.status(404).send("err");
   });
 
@@ -369,7 +365,7 @@ app.get('/titles/:id', function (req, res) {
       let charsHref = '/characters/?page="1"&title=' + titleId;
 
 
-      console.log('title # ' + titleId + ' page send');
+   //  console.log('title # ' + titleId + ' page send');
       res.render("title", {
         titleName: titleObj.name,
         titleImage: titleObj.image,
@@ -377,11 +373,11 @@ app.get('/titles/:id', function (req, res) {
         rating: titleObj.rating,
         characters: characs,
         charsHref: charsHref,
-        
+
       });
     });
   }).catch(err => {
-    console.log(err);
+ //  console.log(err);
     res.status(404).send("err");
   });
 });
@@ -390,45 +386,45 @@ app.get('/titles/:id', function (req, res) {
 app.post('/admin/deleteTitle', function (req, res) {
   let titleId = req.headers.referer.split("/").pop();
   title.deleteById(titleId).then(result => {
-    console.log("deleting title " + titleId + result);
+ //  console.log("deleting title " + titleId + result);
     res.redirect('/titles');
   }).catch(err => {
     res.status(404).send(err);
   });
 
 });
+// @part MYFUNC
+
 
 app.post('/admin/createTitle', function (req, res) {
-  let avaFile = req.files.characPict;
+  const fileObject = req.files.characPict;
+  const fileBuffer = fileObject.data;
   let dateTmp = new Date();
   // constructor(id = -1, name = "", authorAdmin = -1, characters = [], rating = -1, yearOfPublishing = -1, addedAt = "", image = "") {
 
   let newTitle = new title(-1, req.body.name, null, [], req.body.rating, req.body.yearOfPublishing, dateTmp.toISOString(), "--");
   title.insert(newTitle).then(tit => {
     let newTitleId = tit._id;
-    newTitle.image = '/data/fs/' + newTitleId + "/" + avaFile.name;
-    title.update(newTitleId, newTitle).then(() => {
-      let dir = path.join(__dirname, 'data/fs/') + newTitleId;
-      console.log(dir);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-        fs.writeFileSync(dir + "/" + avaFile.name, avaFile.data);
-      } else {
-        return new Promise.reject("Problems while saving file");
-      }
+    cloudinaryUploadPromise(fileBuffer, {
+      resource_type: 'raw'
+    }).then(result => {
+      // console.log(result);
+      newTitle.image = result.url;
+      title.update(newTitleId, newTitle).then(() => {
+        res.redirect("/titles/" + newTitleId);
 
-      res.redirect("/titles/" + newTitleId);
+      });
+    }).catch(err => {
+   //  console.log(err);
+      res.status(404).send(err);
     });
-  }).catch(err => {
-    console.log(err);
-    res.status(404).send(err);
-  });
 
+  });
 });
 
 
 app.get('/newTitle', function (req, res) {
-  console.log("new title page send");
+  // console.log("new title page send");
   res.render('titleNew', {});
 });
 
@@ -448,7 +444,7 @@ app.post('/admin/title/addCharac/:characId', function (req, res) {
 
 
   }).catch(err => {
-    console.log(err);
+ //  console.log(err);
     res.status(404).send(err);
   });
 });
@@ -465,13 +461,13 @@ app.post('/admin/title/deleteCharac/:characId', function (req, res) {
       });
     });
   }).catch(err => {
-    console.log(err);
+ //  console.log(err);
     res.status(404).send(err);
   });
 });
 
 // -------------------------------------------------------
-const dbUrl = process.env["MONGODB_URI"]||'mongodb://localhost:27017/lab5';
+const dbUrl = process.env["MONGODB_URI"] || 'mongodb://localhost:27017/lab5';
 const connectOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -483,5 +479,5 @@ mongoose.connect(dbUrl, connectOptions)
   .then(() => console.log('Mongo database connected'))
   .catch(() => console.log('ERROR: Mongo database not connected'));
 
-let portTmp = process.env["PORT"]|| 3000;
+let portTmp = process.env["PORT"] || 3000;
 app.listen(portTmp, () => console.log('Started server'));

@@ -40,7 +40,6 @@ const UserModel = mongoose.model('User', UserSchema);
 //     .then(() => console.log('Mongo database connected'))
 //     .catch(() => console.log('ERROR: Mongo database not connected'));
 // F------------------------------------------
-// const db = mongoose.connection;
 
 class User {
     constructor(id = -1, login = "", role = -1, fullname = "", registeredAt = "", avaUrl = "", isDisabled = false) {

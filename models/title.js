@@ -93,10 +93,10 @@ class Title {
                 element.toLowerCase();
             });
     
-            console.log(stringsArray);
+            // console.log(stringsArray);
     
             if (stringsArray.length === 1 && stringsArray[0] === "") {
-                console.log("search string is empty");
+                // console.log("search string is empty");
                 return titles;
             } else {
                 let resultArray = new Array();

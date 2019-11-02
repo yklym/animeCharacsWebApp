@@ -51,11 +51,6 @@ const CharacModel = mongoose.model('Charac', CharacSchema);
 // F------------------------------------------
 
 
-// const db = mongoose.connection;
-
-
-// const charactersFilePath = "./data/characters.json";
-
 class Character {
     constructor(id = -1, name = "", fullname = "", alias = "", titles = [], age = -1, addedAt = "", image = "") {
         this.id = id;
@@ -80,8 +75,6 @@ class Character {
         return CharacModel.find().sort({
             created: -1
         });
-        // .catch((err) => console.log("err in getAll\n" + err));
-
     }
 
     static getById(id) {
@@ -95,11 +88,9 @@ class Character {
                 element.trim();
                 element.toLowerCase();
             });
-
-            console.log(stringsArray);
+            // console.log(stringsArray);
 
             if (stringsArray.length === 1 && stringsArray[0] === "") {
-                console.log("search string is empty");
                 return characs;
             } else {
                 let resultArray = new Array();
@@ -115,8 +106,6 @@ class Character {
                         }
                     }
                 }
-                // console.log("======================");
-                // console.log(characs);
                 return resultArray;
             }
         });

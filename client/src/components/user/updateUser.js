@@ -116,11 +116,6 @@ class UpdateUserPage extends Component {
         </div>
 
     <div className="form-group">
-        <label >Login:
-            <input type="text"  className="form-control" value={this.state.login} name="login" onChange={this.handleChange} required pattern="^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>
-        </label>
-    </div>
-    <div className="form-group">
         <label >Telegramm Login:
             <input type="text"  className="form-control" value={this.state.tgLogin} name="tgLogin" onChange={this.handleChange} pattern="^(?=.{1,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>
         </label>

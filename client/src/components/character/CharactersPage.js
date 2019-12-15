@@ -190,8 +190,8 @@ class CharactersPage extends Component {
     }
 
     return <div>
-    <HeaderLinks/>
-
+            <HeaderLinks/>
+      <div>
       <div className="filter-box">
         <aside className="filters">
           <p>Some filters here</p>
@@ -203,7 +203,7 @@ class CharactersPage extends Component {
         <p>And here</p>
       </aside>
       </div>
-  
+
       <main className="entities-main">
         
     <input type="text" name="search" value={query} id="characSearch" className= "entitySearch" placeholder="Search.." onChange={this.handleOnInputChange}/>
@@ -234,6 +234,7 @@ class CharactersPage extends Component {
             Another admin Feature</button>
             </div> : <></>}
   </main>
+  </div>
   </div>
   }
 };

@@ -15,12 +15,14 @@ let CharacSchema = new Schema({
     name: {
         type: String,
         default: "Charac"
-
+    },
+    description: {
+        type: String,
+        default: "Charac"
     },
     fullname: {
         type: String,
         default: "-"
-
     },
     age: {
         type: Number,
@@ -33,33 +35,25 @@ let CharacSchema = new Schema({
     addedAt: {
         type: Date,
         default: Date.now
+    }, 
+    subscribers:{
+        type: [mongoose.mongo.ObjectId],
+        ref: "User",
     }
 });
 const CharacModel = mongoose.model('Charac', CharacSchema);
 
-// const fs = require("fs");
-// TEST ONLY--------------------------------
-// const dbUrl = 'mongodb://localhost:27017/lab5';
-// const connectOptions = {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-// };
-
-// mongoose.connect(dbUrl, connectOptions)
-//     .then(() => console.log('Mongo database connected'))
-//     .catch(() => console.log('ERROR: Mongo database not connected'));
-// F------------------------------------------
-
-
 class Character {
-    constructor(id = -1, name = "", fullname = "", alias = "", titles = [], age = -1, addedAt = "", image = "") {
+    constructor(id = -1, name = "", fullname = "", alias = "", titles = [], age = -1, description ="lorem",image = "") {
         this.id = id;
+        this.description  = description;
         this.name = name;
         this.alias = alias;
         this.fullname = fullname;
         this.titles = titles;
         this.age = age;
-        this.addedAt = addedAt;
+        let dateTmp = new Date();
+        this.addedAt = dateTmp.toISOString();
         this.image = image;
     }
 
@@ -109,6 +103,33 @@ class Character {
                 return resultArray;
             }
         });
+    }
+    static findManyById(idArray){
+        let queryArray = idArray.map(el=>{
+            return mongoose.Types.ObjectId(el);
+        });
+        return CharacModel.find({
+            '_id': { $in: queryArray }
+        });
+    }
+    static addSubsription(userId,characId){
+        return this.getById(characId)
+        .then(char=>{
+            if(!char.subscribers.includes(userId)){
+                char.subscribers.push(userId);
+            }
+            return this.update(characId, char);
+        })
+    }
+    static deleteSubsription(userId, characId) {
+        return this.getById(characId)
+            .then(char => {
+                if (char.subscribers.includes(userId)) {
+                    char.subscribers.splice(char.subscribers.indexOf(userId), 1)
+                }
+                return this.update(characId, char);
+            })
+
     }
     static deleteById(id) {
         return CharacModel.findByIdAndDelete(id);

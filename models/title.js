@@ -56,14 +56,15 @@ const TitleModel = mongoose.model('Title', TitleSchema);
 // const charactersFilePath = "./data/characters.json";
 
 class Title {
-    constructor(id = -1, name = "", authorAdmin = -1, characters = [], rating = -1, yearOfPublishing = -1, addedAt = "", image = "") {
+    constructor(id = -1, name = "", authorAdmin = -1, characters = [], rating = -1, yearOfPublishing = -1,  image = "") {
         this.id = id;
         this.authorAdmin = authorAdmin ;
         this.name = name;
         this.rating = rating;
         this.characters = characters;
         this.yearOfPublishing = yearOfPublishing;
-        this.addedAt = addedAt;
+        let dateTmp = new Date();
+        this.addedAt = dateTmp.toISOString();
         this.image = image;
     }
     

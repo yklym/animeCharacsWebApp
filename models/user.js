@@ -35,7 +35,7 @@ let UserSchema = new Schema({
     },
     chatId: {
         type: Number,
-        default: undefined
+        default: 0
     },
     subscribes: {
         type: [mongoose.mongo.ObjectId],
@@ -48,7 +48,7 @@ const UserModel = mongoose.model('User', UserSchema);
 
 
 class User {
-    constructor(login, password, role = -1, fullname = "", image = "", tgLogin = "", subscribes =[]) {
+    constructor(login, password, role = -1, fullname = "", image = "", tgLogin = "", subscribes =[], chatId = 0) {
 
         this.login = login;
         this.password = password;
@@ -58,6 +58,8 @@ class User {
         this.registeredAt = dateTmp.toISOString();
         this.image = image;
         this.tgLogin = tgLogin;
+        this.subscribes = subscribes;
+        this.chatId = chatId;
     }
     isAdmin() {
         return this.role === 1;

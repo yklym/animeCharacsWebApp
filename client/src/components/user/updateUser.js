@@ -91,8 +91,9 @@ class UpdateUserPage extends Component {
     });
 
   }
-  cancelUpdateHandler = ()=>{
-      this.setState({redirect: `${this.state.characId}`})
+  cancelUpdateHandler = (event)=>{
+        event.preventDefault();
+      this.setState({redirect: `${this.state.targetUser._id}`})
   }
 
   render() {
@@ -121,7 +122,7 @@ class UpdateUserPage extends Component {
     </div>
     <div className="form-group">
         <label >Telegramm Login:
-            <input type="text"  className="form-control" value={this.state.tgLogin} name="tgLogin" onChange={this.handleChange} required pattern="^(?=.{1,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>
+            <input type="text"  className="form-control" value={this.state.tgLogin} name="tgLogin" onChange={this.handleChange} pattern="^(?=.{1,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>
         </label>
     </div>
     

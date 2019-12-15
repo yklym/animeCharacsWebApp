@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { NavLink } from 'react-router-dom'
+import { NavLink ,Redirect} from 'react-router-dom'
 import { updateAuth} from "./myTools"
+
 
 
 
@@ -12,6 +13,7 @@ class HeaderLinks extends Component {
             userRole : null,
             username : null,
             userId : null,
+            redirect: false,
         };
         this.cancel = '';
         this.logOutHandle =this.logOutHandle.bind(this);   
@@ -37,10 +39,14 @@ class HeaderLinks extends Component {
             userRole : currUser.role,
             username : currUser.username,
             userId : currUser._id,
+            redirect: true,
         });
         }
 
     render() {
+        if(this.state.redirect){
+            return <Redirect to="/" />
+        }
         if(this.state.userRole === 1){
             return (
             <div className="myNav">

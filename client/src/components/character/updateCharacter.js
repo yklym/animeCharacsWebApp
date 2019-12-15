@@ -44,7 +44,7 @@ class UpdateCharacterPage extends Component {
               character: res,
               name: res.name,
               fullname: res.fullname,
-              characDescr: res.characDescr,
+              description: res.description,
               alias : res.alias,
               age: res.age,
               imageUrl: res.image,
@@ -70,10 +70,9 @@ class UpdateCharacterPage extends Component {
         console.log(this.state);
         const userData = { name :this.state.name,
             fullname:this.state.fullname,
-            characDescr:this.state.characDescr,
             age: this.state.age,
             image: this.state.image,
-            description: this.state.characDescr,
+            description: this.state.description,
             alias:this.state.alias,
             imageUrl:  this.state.imageUrl,
             prevChar : this.state.character
@@ -174,7 +173,7 @@ class UpdateCharacterPage extends Component {
 </div>
 <div className="form-group-big">
          <legend>Description</legend>
-         <textarea name="characDescr" value={this.state.characDescr}  onChange={this.handleChange}></textarea>
+         <textarea name="characDescr" value={this.state.description}  onChange={this.handleChange}></textarea>
 
 </div>
 <div className="form-group-big">

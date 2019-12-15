@@ -119,7 +119,7 @@ class CharacterPage extends Component {
     return <div>
       <HeaderLinks/>
       <main>
-    <h2>{`${charac.name} ${charac.fullname}`}</h2>
+    <h2>{`${charac.fullname}`}</h2>
     <div className="entitiy-page-wrapper">
 
         <div className="entity-page-image">

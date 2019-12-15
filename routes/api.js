@@ -19,8 +19,9 @@ const character = require("./../models/character");
 const jwt = require('jsonwebtoken');
 const busboyBodyParser = require('busboy-body-parser');
 const cookieParser = require('cookie-parser');
-const bot = require("../bot");
 
+// const bot = require("../bot");
+const bot = null;
 router.use(cookieParser());
 
 router.use(cors())
@@ -276,19 +277,21 @@ router.put('/users/:id', checkAuth, function (req, res) {
     let id = req.params.id;
     let body = req.body;
     console.log(body);
-    
-
+    console.log(id);
     if (!req.files.image) {
         req.body.image = req.body.imageUrl;
         user.update(id, body)
             .then(updatingResult => {
+                console.log(updatingResult);
                 res.status(200).json(updatingResult);
             }).catch(err => {
+                console.log(err);
                 res.status(404).json({
                     "err": err
                 });
             });
     } else {
+        console.log("IM IN!");
         let fileObject;
         let fileBuffer;
         fileObject = req.files.image;
@@ -305,6 +308,7 @@ router.put('/users/:id', checkAuth, function (req, res) {
         }).then(updatingResult => {
             res.json(updatingResult);
         }).catch(err => {
+            console.log(err);
             res.status(404).json({
                 "err": err
             });

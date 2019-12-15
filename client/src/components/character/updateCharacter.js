@@ -173,7 +173,7 @@ class UpdateCharacterPage extends Component {
 </div>
 <div className="form-group-big">
          <legend>Description</legend>
-         <textarea name="characDescr" value={this.state.description}  onChange={this.handleChange}></textarea>
+         <textarea name="description" value={this.state.description}  onChange={this.handleChange}></textarea>
 
 </div>
 <div className="form-group-big">

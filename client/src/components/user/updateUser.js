@@ -9,7 +9,6 @@ class UpdateUserPage extends Component {
         this.fileInput = React.createRef();
 
         this.state = {
-          login: "",
           fullname: "",
           image: undefined,
         };
@@ -33,7 +32,6 @@ class UpdateUserPage extends Component {
              this.setState({
               targetUser: res,
               tgLogin :res.tgLogin, 
-              login: res.login,
               fullname: res.fullname,
               imageUrl : res.image,
               chatId : res.chatId,
@@ -50,8 +48,8 @@ class UpdateUserPage extends Component {
         const userData = {
             password : this.state.targetUser.password,
             registeredAt : this.state.targetUser.registeredAt,
+            login: this.state.targetUser.login,
             fullname: this.state.fullname,
-            login: this.state.login,
             tgLogin : this.state.tgLogin,
             chatId : this.state.chatId,
             image: this.state.image,
@@ -115,6 +113,7 @@ class UpdateUserPage extends Component {
             </label>
         </div>
 
+    
     <div className="form-group">
         <label >Telegramm Login:
             <input type="text"  className="form-control" value={this.state.tgLogin} name="tgLogin" onChange={this.handleChange} pattern="^(?=.{1,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>

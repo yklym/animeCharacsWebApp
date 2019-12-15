@@ -191,7 +191,7 @@ class CharactersPage extends Component {
 
     return <div>
             <HeaderLinks/>
-      <div>
+      {/* <div></div> */}
       <div className="filter-box">
         <aside className="filters">
           <p>Some filters here</p>
@@ -234,7 +234,6 @@ class CharactersPage extends Component {
             Another admin Feature</button>
             </div> : <></>}
   </main>
-  </div>
   </div>
   }
 };

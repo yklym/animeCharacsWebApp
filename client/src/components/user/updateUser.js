@@ -37,7 +37,6 @@ class UpdateUserPage extends Component {
               fullname: res.fullname,
               imageUrl : res.image,
               chatId : res.chatId,
-              subscribes : res.subscribes,
             });
           })
           .catch((error) => {

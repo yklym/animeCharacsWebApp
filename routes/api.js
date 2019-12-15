@@ -20,8 +20,7 @@ const jwt = require('jsonwebtoken');
 const busboyBodyParser = require('busboy-body-parser');
 const cookieParser = require('cookie-parser');
 
-// const bot = require("../bot");
-const bot = null;
+const bot = require("../bot");
 router.use(cookieParser());
 
 router.use(cors())
@@ -188,6 +187,8 @@ router.get('/auth/checkToken', checkAuth, function (req, res) {
 router.post('/createSubscription', checkAuth, function (req, res) {
     let characId = req.body.characId;
     let userId = req.body.userId;
+    console.log(characId);
+    console.log(userId);
     user.getById(userId).then(us => {
         bot.sendMessage(us.chatId, `You've subscribed to new element!`);
     }).then(() => {
@@ -278,6 +279,11 @@ router.put('/users/:id', checkAuth, function (req, res) {
     let body = req.body;
     console.log(body);
     console.log(id);
+    console.log(body.subscribes);
+    if(!body.subscribes){
+        body.subscribes = [];
+    }
+    console.log(body.subscribes);
     if (!req.files.image) {
         req.body.image = req.body.imageUrl;
         user.update(id, body)

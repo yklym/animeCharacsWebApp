@@ -14,7 +14,6 @@ export default (props) => {
 	      } = props;
         
         if(!pagesCount){
-          console.log("results");
           return <div></div>
         }
     return <ul className="pagination pg-amber justify-content-center" id = "characsPagUl">

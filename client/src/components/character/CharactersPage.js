@@ -5,6 +5,7 @@ import PageNavigation from "../widgets/PageNavigation"
 import { Redirect } from "react-router-dom";
 import jwtDecode from "jwt-decode"
 import HeaderLinks from "../HeaderLinks.js"
+import queryString from 'query-string'
 
 class CharacterCard extends Component{
     render(){
@@ -39,9 +40,7 @@ class CharactersPage extends Component {
 
       let userRole = -1;
       let username = "";
-        // console.log("localStorage.token");
-        // console.log(localStorage.token);
-        // console.log(localStorage);
+        
       if(!localStorage.token){
           userRole = -1;
       } else {
@@ -88,8 +87,6 @@ class CharactersPage extends Component {
   };
   renderSearchResults = () => {
     const {results, query} = this.state;
-    // console.log("state");
-    // console.log(this.state);
     
     if (results && Object.keys(results).length && results.length) {
 
@@ -126,20 +123,15 @@ class CharactersPage extends Component {
   };
     
 
-  fetchSearchResults = (pageNumber = 1, query ) => {
-  // ${titleId ? `&title=${titleId}` : ""}
-  // By default the limit of results is 20
+  fetchSearchResults = (pageNumber, query ) => {
     pageNumber = pageNumber || 1;
-    
-// const searchUrl = `https://pixabay.com/api/?key=12413278-79b713c7e196c7a3defb5330e&q=${query}${pageNumber}`;
-  const searchUrl = `/api/v1/characters?page=${pageNumber}${query? `&search=${query}` : ""}`;
-  //console(`Seach url: ${searchUrl}`);
+    const values = queryString.parse(this.props.location.search)
+
+  const searchUrl = `/api/v1/characters?page=${pageNumber}${query? `&search=${query}` : ""}${values.titleId ? `&titleId=${values.titleId}` : ""}`;
   if (this.cancel) {
-  // Cancel the previous request before making a new request
     this.cancel.cancel();
   }
   
-	// Create a new CancelToken
 	this.cancel = axios.CancelToken.source();
 	axios
 		.get(searchUrl, {
@@ -150,8 +142,7 @@ class CharactersPage extends Component {
     },
 		})
 		.then((res) => {
-      //console(`Fetch res:`);
-      //console(res);
+      
 			const resultNotFoundMsg = !res.data.resCharacs.length
 				? 'There are no more search results. Please try a new search.'
         : '';
@@ -175,16 +166,9 @@ class CharactersPage extends Component {
 
 
   render() { 
-    // const { query } = this.state;
-    // console.log("Render Query:");
-    // console.log(query);
     const { query, loading,  currentPageNo, pagesCount, userRole, username } = this.state;
-// showPrevLink will be false, when on the 1st page, hence Prev link be shown on 1st page.
     const showPrevLink = 1 < currentPageNo;
-// showNextLink will be false, when on the last page, hence Next link wont be shown last page.
     const showNextLink = pagesCount > currentPageNo;
-    //console(showNextLink);
-    //console(pagesCount + " total ==== curr  " + currentPageNo);
     if(userRole ===-1){
       return <Redirect to='/auth/login'/>;
     }

@@ -25,7 +25,6 @@ class CreateCharacterPage extends Component {
     handleSubmit = event => {
         event.preventDefault()
         
-        console.log("HANDLE FORM SUBMIT");
         
         const userData = { name :this.state.name,
             fullname:this.state.fullname,
@@ -33,7 +32,6 @@ class CreateCharacterPage extends Component {
             age: this.state.age,
             alias : this.state.alias,
             characPic: this.state.image, }
-        console.log(userData);
         
         const formData  = new FormData();
 
@@ -48,12 +46,9 @@ class CreateCharacterPage extends Component {
         },
             body: formData
         }).then(resp => {
-            console.log(resp);
             return resp.json();
         })
           .then(data => {
-              console.log("DATA:");
-              console.log(data);
 
               this.setState({redirect: data._id});
 
@@ -62,13 +57,9 @@ class CreateCharacterPage extends Component {
    
   handleChange = event => {
       this.setState({[event.target.name]: event.target.value});
-      console.log("Handling input");
-      console.log(this.state);
   }
   handleFileInput = e =>{
-    //   console.log(e.target.files);
       const files = Array.from(e.target.files);
-      console.log();
       this.setState({image : files[0],
                     imageUrl : URL.createObjectURL(files[0])
     });
@@ -83,9 +74,7 @@ class CreateCharacterPage extends Component {
 
     render() {
         let userRole;
-        console.log("RENDERING New CHarac PAGE");
         if(this.state.redirect){
-            console.log("LOGIN PAGE REDIRECT IS TRUE");
             return <Redirect to={`/characters/${this.state.redirect}`}/>;
         }
         

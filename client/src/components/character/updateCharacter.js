@@ -24,7 +24,6 @@ class UpdateCharacterPage extends Component {
       }
 
     componentDidMount(){
-        console.log("");
         let queryStrArr = this.props.location.pathname.split("/");
         let characId = queryStrArr[queryStrArr.length - 1];
     
@@ -38,8 +37,6 @@ class UpdateCharacterPage extends Component {
           },
           }).then(row=>row.json())
           .then((res) => {
-              console.log("update Charac fetch result:");
-              console.log(res);
              this.setState({
               character: res,
               name: res.name,
@@ -65,9 +62,6 @@ class UpdateCharacterPage extends Component {
     
     handleSubmit = event => {
         event.preventDefault()
-        
-        console.log("HANDLE FORM SUBMIT");
-        console.log(this.state);
         const userData = { name :this.state.name,
             fullname:this.state.fullname,
             age: this.state.age,
@@ -77,7 +71,6 @@ class UpdateCharacterPage extends Component {
             imageUrl:  this.state.imageUrl,
             prevChar : this.state.character
         }
-        console.log(userData);
         
         const formData  = new FormData();
 
@@ -92,12 +85,9 @@ class UpdateCharacterPage extends Component {
         },
             body: formData
         }).then(resp => {
-            console.log(resp);
             return resp.json();
         })
           .then(data => {
-              console.log("DATA:");
-              console.log(data);
 
               this.setState({redirect: data._id});
 
@@ -106,13 +96,10 @@ class UpdateCharacterPage extends Component {
    
   handleChange = event => {
       this.setState({[event.target.name]: event.target.value});
-      console.log("Handling input");
-      console.log(this.state);
   }
   
 
   handleFileInput = e =>{
-    //   console.log(e.target.files);
       const files = Array.from(e.target.files);      
       this.setState({
         image : files[0],
@@ -130,9 +117,7 @@ class UpdateCharacterPage extends Component {
 
   render() {
     let userRole;
-    console.log("RENDERING New CHarac PAGE");
     if(this.state.redirect){
-        console.log("LOGIN PAGE REDIRECT IS TRUE");
         return <Redirect to={`/characters/${this.state.redirect}`}/>;
     }
     const charac = this.state

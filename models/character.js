@@ -128,7 +128,7 @@ class Character {
                     char.subscribers.splice(char.subscribers.indexOf(userId), 1)
                 }
                 return this.update(characId, char);
-            })
+            });
 
     }
     static deleteById(id) {

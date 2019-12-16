@@ -1,14 +1,14 @@
 import React from "react";
 import "./App.css";
-
-
 import { Route, Switch } from 'react-router-dom'
-// We will create these two pages in a moment
-import IndexPage from './components/IndexPage'
-import AboutPage from './components/AboutPage'
+
+
+import characSetsPage from "./components/characSet/CharacSetPage"
+import IndexPage from './components/staticPages/IndexPage'
+import AboutPage from './components/staticPages/AboutPage'
+import ApiPage from "./components/staticPages/ApiPage"
 import RegisterPage from "./components/RegisterPage"
 import LoginPage from './components/LoginPage'
-
 // USERS
 import UsersPage from "./components/user/UsersPage"
 import UserPage from "./components/user/UserPage"
@@ -57,11 +57,12 @@ export default function App() {
       <Route exact path="/users" component={UsersPage} />
 
 
-
-      <Route exact path="/newTitle" component={CharactersPage} />
+      <Route exact path="/v1ApiInfo" component={ApiPage} />
+      <Route exact path="/characSets" component={characSetsPage} />
+      {/* <Route exact path="/newTitle" component={CharactersPage} />
       <Route exact path="/titles/:id" component={CharacterPage} />
       <Route exact path="/titles" component={CharactersPage} />
-      <Route exact path="/users" component={CharactersPage} />
+      <Route exact path="/users" component={CharactersPage} /> */}
 
     </Switch>
     </div>

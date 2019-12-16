@@ -3,37 +3,30 @@ import { Redirect } from "react-router-dom";
 import HeaderLinks from "../HeaderLinks";
 
 
-class CreateCharacterPage extends Component {
+class CreateTitlePage extends Component {
     constructor( props ) {
         super( props );
         this.fileInput = React.createRef();
         this.state = {
           name: "",
-          fullname: "",
-          characDescr: "Character description......",
-          age: -1,
-          alias: "",
+          yearOfPublishing: 2000,
+          rating: 5,
           image: undefined,
           imageUrl: "",
         };
         this.handleSubmit = this.handleSubmit.bind(this);
-
-
       }
    
     
     handleSubmit = event => {
         event.preventDefault()
         
-        console.log("HANDLE FORM SUBMIT");
         
-        const userData = { name :this.state.name,
-            fullname:this.state.fullname,
-            description:this.state.description,
-            age: this.state.age,
-            alias : this.state.alias,
-            characPic: this.state.image, }
-        console.log(userData);
+        const userData = { 
+            name :this.state.name,
+            yearOfPublishing:this.state.yearOfPublishing,
+            rating:this.state.rating,
+            titlePict: this.state.image, }
         
         const formData  = new FormData();
 
@@ -41,19 +34,16 @@ class CreateCharacterPage extends Component {
             formData.append(name, userData[name]);
         }
 
-        return fetch("/api/v1/characters", {
+        return fetch("/api/v1/titles", {
             method: 'post',
             headers: {
         'Authorization': `Bearer ${localStorage.token}`,
         },
             body: formData
         }).then(resp => {
-            console.log(resp);
             return resp.json();
         })
           .then(data => {
-              console.log("DATA:");
-              console.log(data);
 
               this.setState({redirect: data._id});
 
@@ -62,31 +52,20 @@ class CreateCharacterPage extends Component {
    
   handleChange = event => {
       this.setState({[event.target.name]: event.target.value});
-      console.log("Handling input");
-      console.log(this.state);
+      
   }
   handleFileInput = e =>{
-    //   console.log(e.target.files);
       const files = Array.from(e.target.files);
-      console.log();
       this.setState({image : files[0],
                     imageUrl : URL.createObjectURL(files[0])
     });
 
   }
 
-  
-    
-  
-    
-  
-
     render() {
         let userRole;
-        console.log("RENDERING New CHarac PAGE");
         if(this.state.redirect){
-            console.log("LOGIN PAGE REDIRECT IS TRUE");
-            return <Redirect to={`/characters/${this.state.redirect}`}/>;
+            return <Redirect to={`/titles/${this.state.redirect}`}/>;
         }
         
         return <div> <HeaderLinks/> 
@@ -103,31 +82,21 @@ class CreateCharacterPage extends Component {
                 </label>
             </div>
 
-        <div className="form-group">
-            <label >Full Name:
-                <input type="text"  className="form-control" placeholder="Enter Fullname" name="fullname" onChange={this.handleChange} required pattern="^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>
-            </label>
-        </div>
-
         
         <div className="form-group">
-            <label >Age:
-                <input type="number" min="1" max="9999999" name="age" value={this.state.age} onChange={this.handleChange} required />
+            <label >Year Of Publishing:
+                <input type="number" min="1" max="3000" name="yearOfPublishing" value={this.state.yearOfPublishing} onChange={this.handleChange} required />
             </label>
         </div>
 
         <div className="form-group">
-            <label >Alias:
-                <input type="text"  className="form-control" placeholder="Enter Alias" name="alias" onChange={this.handleChange} required pattern="^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>
+            <label >Rating:
+                <input type="number" min="1" max="5" name="rating" value={this.state.rating} onChange={this.handleChange} required />
             </label>
         </div>
         
     </div>
-    <div className="form-group-big">
-             <legend>Description</legend>
-             <textarea name="description" value={this.state.characDescr}  onChange={this.handleChange}></textarea>
-
-    </div>
+    
     <div className="form-group-big">
              <legend>Photo</legend>
              <button type="button" className="btn btn-info">
@@ -147,7 +116,7 @@ class CreateCharacterPage extends Component {
 
         <br/>
         <hr/>
-    <input type="submit" className="btn btn-primary" value="Create new character" />
+    <input type="submit" className="btn btn-primary" value="Create new title" />
 
     </form>
     </main>
@@ -156,4 +125,4 @@ class CreateCharacterPage extends Component {
 }
 }
   
-export default CreateCharacterPage;
+export default CreateTitlePage;

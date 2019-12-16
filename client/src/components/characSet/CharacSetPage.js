@@ -8,29 +8,14 @@ import HeaderLinks from "../HeaderLinks.js"
 
 class TitleCard extends Component{
     render(){
-
-        let titleImg = this.props.title.image;
-        let titleName = this.props.title.name;
-        let titleId = this.props.title._id;
-
-        
-        return <div className="card border-dark mb-3">
-            <div className="card-img-wrapper">
-              <Link to={"/titles/" + titleId}>
-                <img src={`${titleImg}`} className="card-img-top"  alt="..."></img>
-              </Link>
-            </div>
-        
-            <div className="card-body justify-content-between">
-            <h5 className="card-title">{titleName}</h5>
-            <Link to={"/titles/" + titleId}>
-                <button className="btn btn-secondary">Details</button>
-            </Link> 
-            </div>
-        </div>
+        return <tr>
+        <th>{this.props.characSet.name}</th>
+        <th>{this.props.characSet.characs.map(id=>{
+          return <Link to={`/characters/${id}`}>*click*</Link>
+        })}</th>
+      </tr>
     }
 }
-
 
 
 class TitlesPage extends Component {
@@ -61,7 +46,6 @@ class TitlesPage extends Component {
   };
 
   handlePageClick = (type) => {
-    // event.preventDefault();
     const updatedPageNo =
             'prev' === type
               ? this.state.currentPageNo - 1
@@ -75,15 +59,12 @@ class TitlesPage extends Component {
 
   renderSearchResults = () => {
     const {results, query} = this.state;
-    
     if (results && Object.keys(results).length && results.length) {
 
-      const cardsArray = results.map(title=>{
-        //console("CHARAC");
-        //console(charac);
-        return <TitleCard title = {title}/>
+      const cardsArray = results.map(characSet=>{
+        return <TitleCard characSet = {characSet}/>
       });
-      return <div className="entities-wrapper" id = "characters-div">{cardsArray}</div>;
+      return <tbody>{cardsArray}</tbody>;
     
     } else {
         return <div className="alert alert-warning">
@@ -110,19 +91,12 @@ class TitlesPage extends Component {
     
 
   fetchSearchResults = (pageNumber, query ) => {
-  // ${titleId ? `&title=${titleId}` : ""}
-  // By default the limit of results is 20
     pageNumber = pageNumber || 1;
-    
-// const searchUrl = `https://pixabay.com/api/?key=12413278-79b713c7e196c7a3defb5330e&q=${query}${pageNumber}`;
-  const searchUrl = `/api/v1/titles?page=${pageNumber}${query? `&search=${query}` : ""}`;
-  //console(`Seach url: ${searchUrl}`);
+  const searchUrl = `/api/v1/characSets?page=${pageNumber}${query? `&search=${query}` : ""}`;
   if (this.cancel) {
-  // Cancel the previous request before making a new request
     this.cancel.cancel();
   }
   
-	// Create a new CancelToken
 	this.cancel = axios.CancelToken.source();
 	axios
 		.get(searchUrl, {
@@ -133,14 +107,12 @@ class TitlesPage extends Component {
     },
 		})
 		.then((res) => {
-      //console(`Fetch res:`);
-      //console(res);
-			const resultNotFoundMsg = !res.data.resTitles.length
+			const resultNotFoundMsg = !res.data.resCharacSets.length
 				? 'There are no more search results. Please try a new search.'
         : '';
 			this.setState({
         currentPageNo : pageNumber,
-        results: res.data.resTitles,
+        results: res.data.resCharacSets,
         pagesCount: res.data.pagesAmount,
 				message: resultNotFoundMsg,
 				loading: false,
@@ -160,39 +132,28 @@ class TitlesPage extends Component {
   render() { 
     
     const { query, loading,  currentPageNo, pagesCount, userRole} = this.state;
-// showPrevLink will be false, when on the 1st page, hence Prev link be shown on 1st page.
     const showPrevLink = 1 < currentPageNo;
-// showNextLink will be false, when on the last page, hence Next link wont be shown last page.
     const showNextLink = pagesCount > currentPageNo;
-    //console(showNextLink);
-    //console(pagesCount + " total ==== curr  " + currentPageNo);
     if(userRole !== 1 && userRole !== 0 ){
       return <Redirect to='/auth/login'/>;
     }
 
     return <div>
-    <HeaderLinks/>
-
-      <div className="filter-box">
-        <aside className="filters">
-          <p>Some filters here</p>
-        </aside>
-        <aside className="filters">
-        <p>And here</p>
-      </aside>
-      </div>
-  
-      <main className="entities-main">
+    <HeaderLinks/>  
+  <main>
+  <input type="text" name="search" value={query} id="characSearch" className= "entitySearch" placeholder="Search.." onChange={this.handleOnInputChange}/>
+    <div class="table">
+      <table>
+        <thead>
+        <tr class="table-head">
+          <th>Name:</th>
+          <th>Characs:</th>
+        </tr>
+        </thead>
+        { this.renderSearchResults() }
         
-    <input type="text" name="search" value={query} id="characSearch" className= "entitySearch" placeholder="Search.." onChange={this.handleOnInputChange}/>
-    
-    <div className="card-deck">
-
-      {/* titles */}
-      { this.renderSearchResults() }
-
+      </table>
     </div>
-    {/* PAGINATION */}
        <PageNavigation
         loading={loading}
         showPrevLink={showPrevLink}
@@ -201,19 +162,8 @@ class TitlesPage extends Component {
         pagesCount = {pagesCount}
         handlePrevClick={() => this.handlePageClick('prev')}
         handleNextClick={() => this.handlePageClick('next')}/>
-      {this.state.userRole ===1 ?
-       <div className="adminButtons">
-         
-         <p>Admin abilities:</p>
-        <Link to="/newTitle" className="btn btn-success">Create title</Link>
-        
-            <button type="button" className="btn btn-info" >
-            Some admin Feature</button>
-            <button type="button" className="btn btn-warning" >
-            Another admin Feature</button>
-            </div> : <></>}
   </main>
-  </div>
+</div>
   }
 };
 

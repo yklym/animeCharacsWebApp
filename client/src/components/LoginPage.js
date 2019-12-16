@@ -19,7 +19,6 @@ class LoginPage extends Component {
 
       handleSubmit = event => {
         event.preventDefault()
-        console.log("HANDLE FORM SUBMIT");
 
         const userData = { username :this.state.username, password:this.state.password }
         
@@ -31,7 +30,6 @@ class LoginPage extends Component {
             body: JSON.stringify(userData)
 
         }).then(resp => {
-            console.log(resp);
             if(resp.status === 406){
               this.setState({
                 errMess : "Wrong login or password!"
@@ -40,8 +38,6 @@ class LoginPage extends Component {
             return resp.json();
         })
           .then(data => {
-              console.log("DATA:");
-              console.log(data.response.token);
             //  @TODOтут ваша логика
             
                 localStorage.setItem("token", data.response.token);
@@ -57,13 +53,10 @@ class LoginPage extends Component {
 
     render() {
         let userRole;
-        console.log("RENDERING LOGIN PAGE");
         if(this.state.redirect){
-            console.log("LOGIN PAGE REDIRECT IS TRUE");
             return <Redirect to='/'/>;
         }
         // if(localStorage.token){
-        //     console.log("LOGIN PAGE RENDER TOKEN IN STOR");
         //     return <Redirect to='/'/>;
         // }
             return <div>

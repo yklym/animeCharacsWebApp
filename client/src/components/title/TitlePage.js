@@ -37,7 +37,6 @@ class AdminTableElement extends Component{
   deleteCharClickHandler = event => {
     event.preventDefault();    
     const searchUrl = `/api/v1/admin/title/addCharac/${this.props.character._id}`;
-    console.log(searchUrl);
         axios
           .post(searchUrl, {
 
@@ -57,20 +56,20 @@ class AdminTableElement extends Component{
   // /admin/title/deleteCharac/{{_id}}
   render(){
     return  <tr>
-    <td><Link to ={`/api/v1/characters/${this.props.character._id}`}>{this.props.character.name}</Link></td>
+    <td><Link to ={`/characters/${this.props.character._id}`}>{this.props.character.name}</Link></td>
     <td>{this.props.character.alias}</td>
     <td>{this.props.character.titles[0]}</td>
     <td>
     { this.state.charac.titles.includes(this.props.titleId)
-        ?<form action="/admin/title/deleteCharac/{{_id}}" method = "POST">
+        ?<form action="/admin/title/deleteCharac/{{_id}}" method = "POST" onSubmit={this.deleteCharClickHandler}>
         <p style={{display:"none"}}>B </p>
-        <input type="submit" className="btn btn-danger" value="Delete char" onClick={this.deleteCharClickHandler}/>
+        <input type="submit" className="btn btn-danger" value="Delete char" />
 
         </form>
 
-        :<form action="/admin/title/addCharac/{{_id}}" method = "POST">
+        :<form action="/admin/title/addCharac/{{_id}}" method = "POST" onSubmit={this.addCharClickHandler}>
         <p style={{display:"none"}}>A </p>
-        <input type="submit" className="btn btn-primary" value="Add char" onClick={this.addCharClickHandler}/>
+        <input type="submit" className="btn btn-primary" value="Add char" />
 
     </form>
         
@@ -110,7 +109,6 @@ class AdminTable extends Component{
 
   }
   rerenderTable = () =>{
-    console.log("Rerendering table");
     const searchUrl = `/api/v1/charactersGetAll`;
         axios
           .get(searchUrl, {
@@ -136,8 +134,6 @@ class AdminTable extends Component{
     if (results && Object.keys(results).length && results.length) {
 
       const cardsArray = results.map(charac=>{
-        // console.log("In map:");
-        // console.log(charac);
         return <AdminTableElement titleId={this.props.titleId} character={charac} rerender={this.rerenderTable}/>
       });
     return <tbody>{cardsArray}</tbody>
@@ -209,7 +205,6 @@ class TitlePage extends Component {
           },
           })
           .then((res) => {
-            console.log(res);
              this.setState({
               title: res.data  
             });
@@ -226,17 +221,7 @@ class TitlePage extends Component {
     }
     //console(this.state);
     const title = this.state.title;
-    //console(charac);
-    // const { query } = this.state;
-    // //console("Render Query:");
-    // //console(query);
-    // const name = this.props.charac.name;
-    // const image = this.props.charac.image;
-    // const fullname = this.props.charac.fullname;
-    // const registredAt = this.props.charac.registredAt;
-    // const content = `CONTENT HERE `
-    //console("CHARACTER PAGE LOAD");
-    // const isAdmin = this.props.charac.isAdmin;
+
     return <div>
       <HeaderLinks/>
       <main>
@@ -273,11 +258,11 @@ class TitlePage extends Component {
                   <tbody>
                     <tr>
                         <td>Rating:</td>
-                        <td>{title.reting}</td>
+                        <td>{title.rating}</td>
                     </tr>
                     <tr>
-                        <td>Info:</td>
-                        <td>---</td>
+                        <td>Characs:</td>
+                        <td><Link to={`/characters?titleId=${title._id}`}>*click*</Link></td>
                     </tr>
                     <tr>
                         <td>Info:</td>

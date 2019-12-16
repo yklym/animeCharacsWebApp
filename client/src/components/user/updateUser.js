@@ -29,8 +29,6 @@ class UpdateUserPage extends Component {
           },
           }).then(row=>row.json())
           .then((res) => {
-              console.log("COMPONENT MOUNT FETCH");
-              console.log(res);
              this.setState({
               targetUser: res,
               tgLogin :res.tgLogin, 
@@ -58,8 +56,6 @@ class UpdateUserPage extends Component {
             image: this.state.image,
             imageUrl:  this.state.imageUrl,
         }
-        console.log("USER DATA");
-        console.log(userData);
         
         const formData  = new FormData();
 
@@ -74,8 +70,6 @@ class UpdateUserPage extends Component {
         },
             body: formData
         }).then(resp => {
-            console.log("Main Fetch resp");
-            console.log(resp);
             return resp.json();
         })
           .then(data => {

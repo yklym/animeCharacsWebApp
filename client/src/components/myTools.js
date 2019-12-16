@@ -6,7 +6,6 @@ import jwtDecode from "jwt-decode"
 export function updateAuth(){
     
     if(!localStorage.token) {
-        console.log("Storage empty");
         return Promise.reject( {
                 role : null,
                 _id : null,
@@ -46,8 +45,6 @@ export function getCurrUserObj(){
         if(!localStorage.token){
             return {};
         } else {
-            console.log("Decode:");
-            console.log(jwtDecode(localStorage.token));
             return jwtDecode(localStorage.token);
         }
 }

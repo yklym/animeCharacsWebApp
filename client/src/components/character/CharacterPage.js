@@ -62,10 +62,9 @@ class CharacterPage extends Component {
             })
 
         }).then(resp => {
-            console.log(resp);
             return resp.json();
         }).then(data=>{
-          console.log(data);
+
           this.setState({
               character: data  
             });
@@ -86,10 +85,8 @@ class CharacterPage extends Component {
             })
 
         }).then(resp => {
-            console.log(resp);
             return resp.json();
         }).then(data=>{
-          console.log(data);
           this.setState({
               character: data  
             });
@@ -212,17 +209,3 @@ class CharacterPage extends Component {
 };
 
 export default CharacterPage;
-
-// PHOTO GALLARY
-// <div className="entity-page-photo-collection">
-
-//<div className="entity-page-image">
-//{/* {{! <img src="../images/maushi1.jpeg" alt=""> }} */}
-//</div>
-//<div className="entity-page-image">
-//{/* {{! <img src="../images/maushi2.jpeg" alt=""> }} */}
-//</div>
-//<div className="entity-page-photo-collection">
-
-//</div> 
-// </div>

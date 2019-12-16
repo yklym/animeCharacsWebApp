@@ -15,7 +15,7 @@ const {
 const user = require("./../models/user");
 const title = require("./../models/title");
 const character = require("./../models/character");
-
+const characSet = require("./../models/characSet")
 const jwt = require('jsonwebtoken');
 const busboyBodyParser = require('busboy-body-parser');
 const cookieParser = require('cookie-parser');
@@ -43,7 +43,6 @@ const opts = {
 }
 
 passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
-    // console.log(jwt_payload);
     user.findByLogin(jwt_payload.username).then(userDoc => {
         if (!userDoc) {
             return done(null, false, {
@@ -67,31 +66,27 @@ const checkAuth = passport.authenticate("jwt", {
 
 // @part JWT TEST
 
+
+
 router.post('/auth/login', function (req, res) {
-    console.log("------------------------");
     const {
         username,
         password
     } = req.body;
-    console.log(req.body);
 
     user.findByLogin(username).then(userDoc => {
         if (!userDoc) {
-            console.log("Wrong login");
             res.status(406).json({
                 err: "wrong login"
             });
             return;
         }
         if (userDoc.password !== sha512(password, hashSalt).passwordHash) {
-            console.log("incorrect pass ");
             res.status(406).json({
                 err: "wrong password"
             });
             return;
         }
-        console.log(`Auth successful for {${username}}`);
-        console.log(userDoc);
         const token = jwt.sign({
             role: userDoc.role,
             username: userDoc.login,
@@ -101,8 +96,6 @@ router.post('/auth/login', function (req, res) {
             expiresIn: '10h'
         });
         const decodedToken = jwt.decode(token);
-        // console.log("Decoded token");
-        // console.log(decodedToken);
 
         const response = {
             token: `${token}`,
@@ -114,8 +107,6 @@ router.post('/auth/login', function (req, res) {
 
         return userDoc;
     }).catch(err => {
-        console.log("ERR");
-        console.log(err);
         res.status(401).json({
             reqErr: err
         });
@@ -130,10 +121,8 @@ router.post('/auth/login', function (req, res) {
 
 
 router.post('/auth/register', function (req, res) {
-    console.log(req.body);
 
     user.findByLogin(req.body.login).then(isExisting => {
-        // console.log(isExisting);
         if (isExisting) {
             res.status(400).json("Login already exists");
         } else {
@@ -146,7 +135,6 @@ router.post('/auth/register', function (req, res) {
                     });
 
                 }).catch(err => {
-                    //  console.log(err);
                     res.status(404).send(err);
                 });
         }
@@ -157,7 +145,6 @@ router.post('/auth/register', function (req, res) {
 
 
 router.get('/auth/checkToken', checkAuth, function (req, res) {
-    console.log("REQ WAS GOT");
     if (req.user) {
         const token = jwt.sign({
             role: req.user.role,
@@ -168,8 +155,6 @@ router.get('/auth/checkToken', checkAuth, function (req, res) {
             expiresIn: '1h'
         });
         // const decodedToken = jwt.decode(token);
-        // console.log("Decoded token");
-        // console.log(decodedToken);
 
         const response = {
             token: `${token}`,
@@ -187,8 +172,6 @@ router.get('/auth/checkToken', checkAuth, function (req, res) {
 router.post('/createSubscription', checkAuth, function (req, res) {
     let characId = req.body.characId;
     let userId = req.body.userId;
-    console.log(characId);
-    console.log(userId);
     user.getById(userId).then(us => {
         bot.sendMessage(us.chatId, `You've subscribed to new element!`);
     }).then(() => {
@@ -201,7 +184,6 @@ router.post('/createSubscription', checkAuth, function (req, res) {
                 }
                 res.status(200).json(charac);
             }).catch(err => {
-                console.log(err);
             })
     })
 });
@@ -209,7 +191,6 @@ router.post('/createSubscription', checkAuth, function (req, res) {
 router.post('/deleteSubscription', checkAuth, function (req, res) {
     let characId = req.body.characId;
     let userId = req.body.userId;
-    console.log("deleteSubs:");
 
     user.deleteSubsription(userId, characId)
         .then(res => {
@@ -220,7 +201,6 @@ router.post('/deleteSubscription', checkAuth, function (req, res) {
             }
             res.status(200).json(charac);
         }).catch(err => {
-            console.log(err);
         })
 });
 
@@ -250,7 +230,6 @@ router.get('/users', checkAuth, checkAdmin, function (req, res) {
 
 router.get('/users/:id', checkAuth, function (req, res) {
     let id = req.params.id;
-    console.log(`/api/v1/users/${id} send`);
     user.getById(id).then(targetUser => {
         res.json(targetUser);
     }).catch(err => {
@@ -261,7 +240,6 @@ router.get('/users/:id', checkAuth, function (req, res) {
 });
 router.delete('/users/:id', checkAuth, checkAdmin, function (req, res) {
     let id = req.params.id;
-    console.log(`/api/v1/users/${id} - delete send`);
     user.deleteById(id).then(result => {
         if (result === null) {
             return Promise.reject("no element with this id");
@@ -277,27 +255,20 @@ router.delete('/users/:id', checkAuth, checkAdmin, function (req, res) {
 router.put('/users/:id', checkAuth, function (req, res) {
     let id = req.params.id;
     let body = req.body;
-    console.log(body);
-    console.log(id);
-    console.log(body.subscribes);
     if(!body.subscribes){
         body.subscribes = [];
     }
-    console.log(body.subscribes);
     if (!req.files.image) {
         req.body.image = req.body.imageUrl;
         user.update(id, body)
             .then(updatingResult => {
-                console.log(updatingResult);
                 res.status(200).json(updatingResult);
             }).catch(err => {
-                console.log(err);
                 res.status(404).json({
                     "err": err
                 });
             });
     } else {
-        console.log("IM IN!");
         let fileObject;
         let fileBuffer;
         fileObject = req.files.image;
@@ -314,7 +285,6 @@ router.put('/users/:id', checkAuth, function (req, res) {
         }).then(updatingResult => {
             res.json(updatingResult);
         }).catch(err => {
-            console.log(err);
             res.status(404).json({
                 "err": err
             });
@@ -322,21 +292,56 @@ router.put('/users/:id', checkAuth, function (req, res) {
     }
 
 });
+//@PART characSEt
+router.get('/characSets', checkAuth, function (req, res) {
+    
+    let currPageNumber = parseInt(req.query.page);
+    if (!currPageNumber || currPageNumber <= 0) {
+        currPageNumber = 1;
+    }
+
+    characSet.getAll().then(resultingArr=>{
+        let pagesAmount = Math.ceil(resultingArr.length / pageSize);
+        if (currPageNumber >= pagesAmount) {
+            currPageNumber = pagesAmount;
+        }
+        let pageBufIndex = (currPageNumber - 1) * pageSize;
+        let resCharacSets = resultingArr.splice(pageBufIndex, pageSize);
+        // 
+    res.json({
+            resCharacSets,
+            pagesAmount
+        });
+    }).catch(err => {
+        res.status(404).json({
+            "err": err
+        });
+    });
+});
+
 // @part Charac
 // , checkAuth, 
 router.get('/charactersGetAll', checkAuth, function (req, res) {
     character.getAll().then(result => {
         res.status(200).json(result);
-    })
+    });
 });
+
 router.get('/characters', checkAuth, function (req, res) {
     let searchWord = req.query.search || "";
+    let titleId = req.query.titleId || "";
+
     let currPageNumber = parseInt(req.query.page);
     if (!currPageNumber || currPageNumber <= 0) {
         currPageNumber = 1;
     }
-    console.log(`/api/v1/characters send`);
+
     character.getAllByString(searchWord).then(characsList => {
+        if(titleId){
+        characsList = characsList.filter(el=>{
+            return el.titles.includes(titleId);
+        });
+    }
         let pagesAmount = Math.ceil(characsList.length / pageSize);
         if (currPageNumber >= pagesAmount) {
             currPageNumber = pagesAmount;
@@ -344,7 +349,6 @@ router.get('/characters', checkAuth, function (req, res) {
         let pageBufIndex = (currPageNumber - 1) * pageSize;
         let resCharacs = characsList.splice(pageBufIndex, pageSize);
         // 
-
         res.json({
             resCharacs,
             pagesAmount
@@ -355,10 +359,8 @@ router.get('/characters', checkAuth, function (req, res) {
         });
     });
 });
-// checkAuth,
 router.get('/characters/:id', checkAuth, function (req, res) {
     let id = req.params.id;
-    console.log(`/api/v1/characters/${id} send`);
     character.getById(id).then(targetCharacter => {
         if (targetCharacter === null) {
             return Promise.reject("No character with this id");
@@ -373,7 +375,6 @@ router.get('/characters/:id', checkAuth, function (req, res) {
 
 router.delete('/characters/:id', checkAuth, checkAdmin, function (req, res) {
     let id = req.params.id;
-    console.log(`/api/v1/characters/${id} - delete send`);
     character.deleteById(id).then(result => {
         if (result === null) {
             return Promise.reject("no element with this id");
@@ -387,8 +388,7 @@ router.delete('/characters/:id', checkAuth, checkAdmin, function (req, res) {
 });
 
 router.post('/characters', checkAuth, checkAdmin, function (req, res) {
-    console.log("POST CHARACTERS REQ:")
-    console.log(req.files);
+    
     let body = req.body;
     let fileObject;
     let fileBuffer;
@@ -404,7 +404,6 @@ router.post('/characters', checkAuth, checkAdmin, function (req, res) {
         body.image = result.url;
         return character.insert(body);
     }).then(finRes => {
-        console.log(finRes);
         res.status(201).json(finRes);
     }).catch(err => {
         res.status(404).json({
@@ -417,7 +416,6 @@ router.post('/characters', checkAuth, checkAdmin, function (req, res) {
 router.put('/characters/:id', checkAuth, checkAdmin, function (req, res) {
     let id = req.params.id;
     let body = req.body;
-    console.log("Update character");
     if (!req.files.image) {
 
         body.image = body.imageUrl;
@@ -431,7 +429,6 @@ router.put('/characters/:id', checkAuth, checkAdmin, function (req, res) {
                     "err": err
                 });
             }).then((usArr)=>{
-                console.log(usArr);
                 usArr.forEach(userEl=>{
                     bot.sendMessage(userEl.chatId, `It seems one of your favourite characs ${body.name} has been updated!`);
                 });
@@ -439,7 +436,6 @@ router.put('/characters/:id', checkAuth, checkAdmin, function (req, res) {
     } else {
         let fileObject;
         let fileBuffer;
-        console.log("Saving image");
         fileObject = req.files.image;
         if (!fileObject) {
             res.status(404).send("problems with file");
@@ -470,7 +466,6 @@ router.get('/titles', checkAuth, checkAuth, function (req, res) {
     if (!currPageNumber || currPageNumber <= 0) {
         currPageNumber = 1;
     }
-    console.log(`/api/v1/titles send`);
     title.getAllByString(searchWord).then(titlesList => {
         let pagesAmount = Math.ceil(titlesList.length / pageSize);
         if (currPageNumber >= pagesAmount) {
@@ -492,7 +487,6 @@ router.get('/titles', checkAuth, checkAuth, function (req, res) {
 
 router.get('/titles/:id', checkAuth, checkAuth, function (req, res) {
     let id = req.params.id;
-    console.log(`/api/v1/titles/${id} send`);
     title.getById(id).then(targetTitles => {
         res.json(targetTitles);
     }).catch(err => {
@@ -504,7 +498,6 @@ router.get('/titles/:id', checkAuth, checkAuth, function (req, res) {
 
 router.delete('/titles/:id', checkAuth, checkAdmin, function (req, res) {
     let id = req.params.id;
-    console.log(`/api/v1/titles/${id} - delete send`);
     title.deleteById(id).then(result => {
         if (result === null) {
             return Promise.reject("no element with this id");
@@ -588,7 +581,6 @@ router.post('/admin/title/deleteCharac/:characId', checkAuth, checkAdmin, functi
                         });
                 });
         }).catch(err => {
-            //  console.log(err);
             res.status(404).json({
                 err: err
             });
@@ -611,7 +603,6 @@ router.post('/admin/title/addCharac/:characId', checkAuth, checkAdmin, function 
             res.status(200);
         })
         .catch(err => {
-            //  console.log(err);
             res.status(404).json({
                 err: err
             });

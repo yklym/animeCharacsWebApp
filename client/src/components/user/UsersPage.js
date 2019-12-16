@@ -57,9 +57,7 @@ class TitlesPage extends Component {
   };
 
   renderSearchResults = () => {
-    console.log(this.state.results);
     const {results, query} = this.state;
-    console.log(results);
     
     if (results && Object.keys(results).length && results.length) {
 
@@ -109,7 +107,6 @@ class TitlesPage extends Component {
     },
 		})
 		.then((res) => {
-      console.log(res);
 			const resultNotFoundMsg = !res.data.resUsers.length
 				? 'There are no more search results. Please try a new search.'
         : '';

@@ -40,11 +40,9 @@ class LoginPage extends Component {
         event.preventDefault()
 
         if(this.state.password1 !== this.state.password2){
-          console.log("Diff passwords");          
           this.setState({passErr: true});
           return;
         }
-        console.log("HANDLE FORM SUBMIT");
 
         const userData = this.state;
         
@@ -56,10 +54,8 @@ class LoginPage extends Component {
             body: JSON.stringify(userData)
 
         }).then(resp => {
-            console.log(resp);
             if(resp.status === 400){
               this.setState({loginErr : true});
-              console.log("Diff logins");
               throw new Error("login is not unique");
             } else {    
               this.setState({redirect: true});
@@ -79,7 +75,6 @@ class LoginPage extends Component {
     render() {
         let userRole;
         if(this.state.redirect){
-            console.log("REGISTER PAGE REDIRECT IS TRUE");
             return <Redirect to='/'/>;
         }
             return <div>            

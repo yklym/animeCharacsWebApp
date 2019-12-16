@@ -138,7 +138,7 @@ class UpdateCharacterPage extends Component {
 
     <div className="form-group">
         <label >Full Name:
-            <input type="text"  className="form-control" value={charac.fullname} name="fullname" onChange={this.handleChange} required pattern="^(\w\w+)\s(\w+)$"/>
+            <input type="text"  className="form-control" value={charac.fullname} name="fullname" onChange={this.handleChange} required pattern="^(?=.{2,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$"/>
         </label>
     </div>
 

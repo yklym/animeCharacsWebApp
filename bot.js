@@ -4,9 +4,9 @@ const {
 
 
 const User = require('./models/user')
-const Character = require('./models/character')
+const Character = require('./models/character');
 
-const TelegramBot = require('node-telegram-bot-api')
+const TelegramBot = require('node-telegram-bot-api');
 
 let bot = new TelegramBot(botConfig, {
     polling: {
@@ -30,7 +30,7 @@ bot.onText(/\/start/, msg => {
                 bot.sendMessage(msg.chat.id, messText, {
                     "reply_markup": {
                         "keyboard": [
-                            ["feature", "/subscribes"],
+                            ["/subscribes"],
                             ["feature"],
                             ["/unsubscribe"]
                         ]
@@ -61,7 +61,7 @@ bot.onText(/\/delete (.+)/, function (msg, match) {
                 bot.sendMessage(msg.chat.id, "Deleting successful!");
             }).catch(err=>{
                 bot.sendMessage(msg.chat.id, "Internal error while deleting!");
-            })
+            });
 
         }else {
             bot.sendMessage(msg.chat.id, "It seems you have no right to perform this");
@@ -70,7 +70,7 @@ bot.onText(/\/delete (.+)/, function (msg, match) {
 
     
 bot.onText(/\/search (.+)/, function (msg, match) {
-    var searchString = match[1];
+    let searchString = match[1];
     let isAdmin = 0; 
     User.findByTgName(msg.from.username)
     .then(resUser=>{
@@ -94,12 +94,12 @@ Fullname: ${charac.fullname}
 Alias: ${charac.alias}
 Image: <a href="${charac.image}"> Download </a>
 ${isAdmin ? `<i>Id:\n${charac._id}</i>` : ""}
-<a href="#">Link on site</a>
+<a href="https://anime-characs.herokuapp.com/characters/${charac._id}">Link on site</a>
 `;
             bot.sendMessage(msg.chat.id, characStr, {parse_mode: "HTML"});
             i++;
         });
-    })
+    });
 });
 bot.onText(/\/subscribes/, msg => {
     User.findByTgName(msg.from.username)
@@ -117,30 +117,18 @@ bot.onText(/\/subscribes/, msg => {
 Fullname: ${charac.fullname}
 Alias: ${charac.alias}
 Image: <a href="${charac.image}"> Download </a>
-<a href="#">Link on site</a>
+<a href="https://anime-characs.herokuapp.com/characters/${charac._id}">Link on site</a>
 `;
                 bot.sendMessage(msg.chat.id, characStr, {
                     parse_mode: "HTML"
                 });
             });
-        })
-})
-// MAY DO LATER
-// bot.on('message', (msg) => {
-//     // console.log(msg);
-//     let file = bot.getFile(msg.photo[0].file_id).then(
-//         res=>{
-//             console.log(res);
-
-//             https://api.telegram.org/file/bot<token>/<file_path>
-//             bot.sendMessage(msg.chat.id, 'I"m not a chat-bot!');
-//         }
-//     )
-//   });
+        });
+});
 
 
 bot.onText(/\/help (.+)/, (msg) => {
-    bot.sendMessage(msg.chat.id, "Meow")
+    bot.sendMessage(msg.chat.id, "Meow");
 })
 
 

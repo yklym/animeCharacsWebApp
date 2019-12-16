@@ -78,14 +78,14 @@ router.post('/auth/login', function (req, res) {
     user.findByLogin(username).then(userDoc => {
         if (!userDoc) {
             console.log("Wrong login");
-            res.status(401).json({
+            res.status(406).json({
                 err: "wrong login"
             });
             return;
         }
         if (userDoc.password !== sha512(password, hashSalt).passwordHash) {
             console.log("incorrect pass ");
-            res.status(401).json({
+            res.status(406).json({
                 err: "wrong password"
             });
             return;

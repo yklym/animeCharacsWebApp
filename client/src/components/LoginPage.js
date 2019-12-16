@@ -32,17 +32,21 @@ class LoginPage extends Component {
 
         }).then(resp => {
             console.log(resp);
+            if(resp.status === 406){
+              this.setState({
+                errMess : "Wrong login or password!"
+              })
+            }
             return resp.json();
         })
           .then(data => {
               console.log("DATA:");
               console.log(data.response.token);
-            if (data.message) {
             //  @TODOтут ваша логика
-            } else {
+            
                 localStorage.setItem("token", data.response.token);
                 this.setState({redirect: true});
-            }
+            
           }).catch(err=>{console.log(err);})
       }
      
@@ -84,7 +88,13 @@ class LoginPage extends Component {
                         value={this.state.password}
                         onChange={this.handleChange} 
                         required />
-
+                    {this.state.errMess 
+                    ?<div className="alert alert-danger">
+                    <strong> 
+                    <h4>{this.state.errMess}</h4>
+                    </strong>
+              </div> 
+                    :<></>}
                     <button type="submit" className="registerbtn" >Login</button>
                     </div>
             

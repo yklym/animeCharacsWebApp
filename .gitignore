@@ -148,6 +148,8 @@ packages/react-devtools-shell/dist
 
 node_modules
 build
+client/build
+config.js
 npm-debug.log
 .env
 .DS_Store
